@@ -284,35 +284,31 @@
         });
       }
 
+
+      // Geocoding
       var geocodeCache = {};
       function geocode(address, callback) {
-        address = address.replace(/\s+/, ' ', 'g') + " Seattle WA";
-
-        var crossStreetSuffix = / \/ (\d+)(st|nd|rd|th) Av/i;
-        var crossStreet = address.match(crossStreetSuffix);
-        if (crossStreet) {
-          address = parseInt(crossStreet[1], 10) * 100
-                  + " "
-                  + address.replace(crossStreetSuffix, '');
-        }
+        address += " Seattle WA";
+        address  = address.replace(/\s+/, ' ', 'g');
+        address  = address.replace(/ \/ /, ' & ');
 
         if (geocodeCache[address] === undefined) {
           console.debug("Geocoding: ", address);
 
-          var url = 'http://nominatim.openstreetmap.org/search'
-                  + '?format=json'
-                  + '&countrycodes=us'
-                  + '&limit=1'
-                  + '&email=hi@tsibley.net'
-                  + '&q=' + encodeURIComponent(address);
-          dl.json(url, function(err, data){
-            if (err || !data[0]) {
+          var url = 'https://maps.googleapis.com/maps/api/geocode/json'
+                  + '?key=AIzaSyBtQUh1mtYqSo8FzPxZ3iA25o4rN-pV1Fc'
+                  + '&region=us'
+                  + '&language=en'
+                  + '&address=' + encodeURIComponent(address);
+          dl.load({ url: url }, function(err, data){
+            if (err || !data) {
               console.error("Error geocoding: ", address);
-              console.error("Error was: ", err || "No results found");
+              console.error("Error was: ", err || "No data returned");
               geocodeCache[address] = null;
               return;
             }
-            geocodeCache[address] = [ data[0].lon, data[0].lat ];
+            data = JSON.parse(data).results;
+            geocodeCache[address] = [ data[0].geometry.location.lng, data[0].geometry.location.lat ];
             callback( geocodeCache[address] );
           });
         }
