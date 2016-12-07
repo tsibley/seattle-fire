@@ -239,11 +239,12 @@
 
         dl.groupby('location').execute(data).forEach(function(d){
           geocode(d.location, function(incidentCoord) {
-            var units =
+            var units = dl.unique(
               d.values
                .map(function(incident) { return incident.units.split(/\s+/) })
                .reduce(function(a,b) { return a.concat(b) })
-               .sort();
+               .sort()
+             );
 
             var reason = dl.unique(d.values, 'incident_type').join(" / ");
 
