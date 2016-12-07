@@ -14,3 +14,10 @@ data/apparatus-stations-geocoded.csv: data/apparatus-locations.csv data/stations
 			| recs sort -k apparatus \
 			| recs tocsv -k apparatus,station,address,lon,lat \
 			> $@
+
+publish:
+	rsync -av --no-owner --no-group --delete \
+		--chmod=u=rwX,og=rX \
+		--exclude='.git*' \
+		--exclude=data/active-incidents.tsv \
+		. tsibley.net:www/seattle/fire/
