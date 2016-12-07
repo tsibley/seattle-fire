@@ -20,5 +20,5 @@ incident_type
 # Active incidents
 curl -fsS "$url" \
     | grep -E 'td[^>]+\bactive\b' \
-    | perl -nE '/>(.+)<\/td>\s*$/ and say $1' \
+    | perl -nE '/>\s*(.+)\s*<\/td>\s*$/ and say $1' \
     | perl -nE 'chomp; push @lines, $_; say(join "\t", @lines), @lines = () if $. % 6 == 0 or eof;'

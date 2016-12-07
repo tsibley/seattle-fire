@@ -1,0 +1,325 @@
+<html>
+  <head>
+    <title>Seattleʼs Heritage Trees</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.0.2/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.0.2/dist/leaflet.js"></script>
+    <script src="http://vega.github.io/datalib/datalib.min.js"></script>
+
+    <style type="text/css">
+      body {
+        font-family: "Helvetica Neue", Arial, Helvetica, sans-serif;
+        margin: 0;
+        padding: 0;
+      }
+      h1, #whatisthis {
+        position: absolute;
+        z-index: 1000;
+        opacity: 0.6;
+        top: 0.1em;
+        left: 1.25em;
+        color: black;
+        text-shadow: white 0 0 3px;
+        margin: 0;
+        padding: 0;
+      }
+      h1 {
+        font-weight: normal;
+        font-size: 40px;
+        color: #ce2029;
+      }
+      #whatisthis {
+        left: 3.1em;
+        top: 2.75em;
+        max-width: 24em;
+      }
+      html, body, #map {
+        height: 100%;
+      }
+      .station-icon span {
+        font-size: 12px;
+        min-width: 12px;
+        text-align: center;
+        color: white;
+        background-color: #aa3311;
+        border-radius: 2px;
+        padding: 0 3px;
+
+        display: block;
+        position: absolute;
+        transform: translate(-50%, 0%);
+      }
+      .incident-icon {
+        color: #ce2029;
+        font-size: 18px;
+        position: absolute;
+        top: -9px;
+        left: -4px;
+      }
+      .leaflet-popup-content h4 {
+        font-size: 1.1em;
+        margin-bottom: 1em;
+      }
+      .leaflet-popup-content ul {
+        margin-top: 0;
+        margin-bottom: 0;
+        padding-left: 2em;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>🚒 </h1>
+    <div id="whatisthis">
+      Displaying the home stations and
+      <a href="http://www2.seattle.gov/fire/realtime911/getRecsForDatePub.asp?action=Today&incDate=&rad1=des">active response locations</a>
+      of
+      <a href="http://seattle.gov/fire/">Seattle Fire Department’s</a>
+      beautiful apparatus.
+      A fun distraction by <a href="https://tsibley.net">Thomas Sibley</a>.
+      <br>
+      <small>Next update in <span id="countdown">60</span>s.</small>
+    </div>
+    <div id="map"></div>
+    <script>
+      'use strict';
+
+      function esc(text) {
+        var div = document.createElement("div");
+        div.textContent = text;
+        return div.innerHTML;
+      }
+
+      var Seattle = [47.63323873424374, -122.32006072998048];
+
+      var Map = L.map('map').setView(Seattle, 12);
+
+      var streets = L.tileLayer('https://{s}.tiles.mapbox.com/v3/{map}/{z}/{x}/{y}.png', {
+        attribution: "<a href='https://www.mapbox.com/about/maps/' target='_blank'>&copy; Mapbox &copy; OpenStreetMap</a>",
+        map: 'trs.he762e4e',
+        maxZoom: 17
+      }).addTo(Map);
+
+      var stationLayer = L.geoJson(null, {
+        pointToLayer: function(station, ll) {
+          return L.marker(ll, {
+            title: "Station #" + station.properties.name,
+            icon: L.divIcon({
+              html: "<span>" + esc(station.properties.name) + "</span>",
+              className: 'station-icon'
+            })
+          });
+        },
+        onEachFeature: function(station, layer) {
+          layer.bindPopup(
+              "<h4>Station #"
+            + esc(station.properties.name)
+            + "</h4>"
+            + esc(station.properties.address)
+          );
+        }
+      }).addTo(Map);
+
+      var incidentIcon  = L.divIcon({ html: '🚨 ', className: 'incident-icon' });
+      var incidentLayer = L.geoJson(null, {
+        pointToLayer: function(incident, ll) {
+          return L.marker(ll, {
+            title: incident.properties.address,
+            icon: incidentIcon
+          });
+        },
+        style: function(path) {
+          return {
+            color: '#ce2029',
+            opacity: 0.8
+          };
+        },
+        onEachFeature: function(feature, layer) {
+          var html,
+              geometry = feature.geometry.type;
+
+          if (geometry === "Point") {
+            html = "<h4>" + esc(feature.properties.address) + "</h4>"
+                 + "<div class='units'>"
+                 + feature.properties.units.length
+                   + " unit"
+                   + (feature.properties.units.length === 1 ? "" : "s")
+                   + ": "
+                   + "<ul>"
+                     + feature.properties.units.map(function(_){ return "<li>" + esc(_) + "</li>" }).join("\n")
+                   + "</ul>"
+                 + "</div>"
+                 + "<p class='reason'>" + esc(feature.properties.reason) + "</p>";
+          }
+          else if (geometry === "LineString") {
+            html = 'Unit ' + feature.properties.name;
+          }
+          layer.bindPopup(html);
+        }
+      }).addTo(Map);
+
+
+      // Chain load the data
+      var stations          = {};
+      var apparatusStations = {};
+
+      dl.csv('data/stations-geocoded.csv', processStations);
+
+      function processStations(err, data) {
+        if (err) {
+          console.error("Error fetching stations: ", err);
+          return;
+        }
+
+        data.forEach(function(d){
+          stationLayer.addData({
+            type: "Feature",
+            properties: {
+              name: d.station,
+              address: d.address
+            },
+            geometry: {
+              type: "Point",
+              coordinates: [d.lon, d.lat]
+            }
+          });
+
+          stations[d.station] = d;
+        });
+
+        dl.csv('data/apparatus-locations.csv', processApparatus);
+      }
+
+      function processApparatus(err, data) {
+        if (err) {
+          console.error("Error fetching apparatus stations: ", err);
+          return;
+        }
+
+        data.forEach(function(d){
+          var station = stations[d.station];
+          if (station) {
+            apparatusStations[d.apparatus] = station;
+          } else {
+            console.log("Hmm, no station for apparatus: ", apparatus);
+            console.log("I know these stations: ", stations);
+          }
+        });
+
+        loadIncidents();
+        setInterval(checkForUpdate, 1000, { loaded: new Date() });
+      }
+
+      function checkForUpdate(state) {
+        var refresh = 60;
+        var elapsed = Math.floor((new Date() - state.loaded) / 1000);
+
+        if (elapsed >= refresh) {
+          loadIncidents();
+          state.loaded = new Date();
+          elapsed = refresh;
+        }
+        document.getElementById("countdown")
+          .textContent = refresh - elapsed;
+      }
+
+      function loadIncidents() {
+        dl.tsv('data/active-incidents.tsv', processIncidents);
+      }
+
+      function processIncidents(err, data) {
+        if (err) {
+          console.error("Error fetching active incidents: ", err);
+          return;
+        }
+
+        // Clear out existing data
+        incidentLayer.clearLayers();
+
+        dl.groupby('location').execute(data).forEach(function(d){
+          geocode(d.location, function(incidentCoord) {
+            var units =
+              d.values
+               .map(function(incident) { return incident.units.split(/\s+/) })
+               .reduce(function(a,b) { return a.concat(b) });
+
+            var reason = dl.unique(d.values, 'incident_type').join(" / ");
+
+            incidentLayer.addData({
+              type: "Feature",
+              properties: {
+                address: d.location,
+                units: units,
+                reason: reason
+              },
+              geometry: {
+                type: "Point",
+                coordinates: incidentCoord
+              }
+            });
+
+            units.map(function(unit) {
+              var station = apparatusStations[unit];
+              if (!station)
+                console.error("Active incident reported unit for which we have no station: ", unit);
+              return { unit: unit, station: station };
+            })
+            .forEach(function (d) {
+              incidentLayer.addData({
+                type: "Feature",
+                properties: {
+                  name: d.unit
+                },
+                geometry: {
+                  type: "LineString",
+                  coordinates: [
+                    [d.station.lon, d.station.lat],
+                    incidentCoord
+                  ]
+                }
+              });
+            });
+          });
+        });
+      }
+
+
+      // Geocoding
+      var geocodeCache = {};
+      function geocode(address, callback) {
+        address += " Seattle WA";
+        address  = address.replace(/\s+/, ' ', 'g');
+        address  = address.replace(/ \/ /, ' & ');
+
+        if (geocodeCache[address] === undefined) {
+          console.debug("Geocoding: ", address);
+
+          var url = 'https://maps.googleapis.com/maps/api/geocode/json'
+                  + '?key=AIzaSyBtQUh1mtYqSo8FzPxZ3iA25o4rN-pV1Fc'
+                  + '&region=us'
+                  + '&language=en'
+                  + '&address=' + encodeURIComponent(address);
+          dl.load({ url: url }, function(err, data){
+            if (err || !data) {
+              console.error("Error geocoding: ", address);
+              console.error("Error was: ", err || "No data returned");
+              geocodeCache[address] = null;
+              return;
+            }
+            data = JSON.parse(data).results;
+            geocodeCache[address] = [ data[0].geometry.location.lng, data[0].geometry.location.lat ];
+            callback( geocodeCache[address] );
+          });
+        }
+        else if (geocodeCache[address]) {
+          console.debug("Using cached location for address: ", address);
+          callback( geocodeCache[address] );
+        }
+        else {
+          console.debug("Cache says no good for address: ", address);
+        }
+      }
+    </script>
+  </body>
+</html>
