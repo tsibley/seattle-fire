@@ -242,7 +242,8 @@
             var units =
               d.values
                .map(function(incident) { return incident.units.split(/\s+/) })
-               .reduce(function(a,b) { return a.concat(b) });
+               .reduce(function(a,b) { return a.concat(b) })
+               .sort();
 
             var reason = dl.unique(d.values, 'incident_type').join(" / ");
 
