@@ -334,6 +334,13 @@
           console.debug("Cache says no good for address: ", address);
         }
       }
+
+
+      // Close popup on Escape
+      document.addEventListener("keyup", function(ev){
+        if (ev.keyCode == 27) // Esc
+          Map.closePopup();
+      }, false);
     </script>
   </body>
 </html>
