@@ -5,7 +5,8 @@ all: data/apparatus-locations.csv data/active-incidents.tsv
 
 .PHONY: data/active-incidents.tsv
 data/active-incidents.tsv:
-	./fetch-incidents > $@
+	./fetch-incidents > $@.new
+	mv $@.new $@
 
 data/apparatus-locations.csv: data/sources/wikipedia.tsv
 	recs fromcsv -d $$'\t' -k station,neighborhood,address,units $< \
