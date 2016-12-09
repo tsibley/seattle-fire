@@ -1,6 +1,9 @@
-# Seattle Fire incidents
+# 🚒 Seattle Fire active incidents map
 
-Mapping the apparatus home locations for active incidents.
+A map of the home stations and active response locations of Seattle Fire
+Department’s beautiful apparatus.
+
+[Visit the site](https://tsibley.net/seattle/fire/)
 
 ## Data sources
 
