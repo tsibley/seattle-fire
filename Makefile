@@ -1,7 +1,7 @@
 SHELL := /bin/bash
 export SHELLOPTS := errexit:pipefail
 
-all: data/apparatus-stations-geocoded.csv data/active-incidents.tsv
+all: data/apparatus-locations.csv data/active-incidents.tsv
 
 .PHONY: data/active-incidents.tsv
 data/active-incidents.tsv:
