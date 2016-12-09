@@ -1,6 +1,6 @@
 <html>
   <head>
-    <title>Seattleʼs Heritage Trees</title>
+    <title>🚒  Seattle Fire Active Incidents Map</title>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
 
@@ -18,8 +18,8 @@
         position: absolute;
         z-index: 1000;
         opacity: 0.6;
-        top: 0.1em;
-        left: 1.25em;
+        top: 0;
+        left: 50px;
         color: black;
         text-shadow: white 0 0 3px;
         margin: 0;
@@ -28,11 +28,20 @@
       h1 {
         font-weight: normal;
         font-size: 40px;
+        line-height: 40px;
         color: #ce2029;
+        padding: 0;
+        margin: 0;
+        white-space: nowrap;
+      }
+      h1 small {
+        font-size: 20px;
+        line-height: 40px;
+        color: black;
+        vertical-align: top;
       }
       #whatisthis {
-        left: 3.1em;
-        top: 2.75em;
+        top: 40px;
         max-width: 24em;
       }
       html, body, #map {
@@ -70,7 +79,7 @@
     </style>
   </head>
   <body>
-    <h1>🚒 </h1>
+    <h1>🚒 <small>Seattle Fire Active Incidents Map</small></h1>
     <div id="whatisthis">
       Displaying the home stations and
       <a href="http://www2.seattle.gov/fire/realtime911/getRecsForDatePub.asp?action=Today&incDate=&rad1=des">active response locations</a>
