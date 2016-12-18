@@ -34,6 +34,10 @@
         margin: 0;
         white-space: nowrap;
       }
+      h1 a {
+        color: #ce2029;
+        text-decoration: none;
+      }
       h1 small {
         font-size: 20px;
         line-height: 40px;
@@ -76,10 +80,24 @@
         margin-bottom: 0;
         padding-left: 2em;
       }
+      @media only screen and (max-width: 800px) {
+        h1 small, #whatisthis {
+          visibility: hidden;
+        }
+        h1 a {
+          cursor: pointer;
+        }
+        .whatisthis-visible h1 small, .whatisthis-visible #whatisthis {
+          visibility: visible;
+        }
+      }
     </style>
   </head>
   <body>
-    <h1>🚒 <small>Seattle Fire Active Incidents Map</small></h1>
+    <h1>
+      <a onclick="document.body.classList.toggle('whatisthis-visible')">🚒 </a>
+      <small>Seattle Fire Active Incidents Map</small>
+    </h1>
     <div id="whatisthis">
       Displaying the home stations and
       <a href="http://www2.seattle.gov/fire/realtime911/getRecsForDatePub.asp?action=Today&incDate=&rad1=des">active response locations</a>
