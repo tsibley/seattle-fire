@@ -37,6 +37,7 @@
       h1 a {
         color: #ce2029;
         text-decoration: none;
+        cursor: pointer;
       }
       h1 small {
         font-size: 20px;
@@ -80,14 +81,15 @@
         margin-bottom: 0;
         padding-left: 2em;
       }
+
+      .whatisthis-toggle-default h1 small, .whatisthis-toggle-default #whatisthis {
+        visibility: hidden;
+      }
       @media only screen and (max-width: 800px) {
         h1 small, #whatisthis {
           visibility: hidden;
         }
-        h1 a {
-          cursor: pointer;
-        }
-        .whatisthis-visible h1 small, .whatisthis-visible #whatisthis {
+        .whatisthis-toggle-default h1 small, .whatisthis-toggle-default #whatisthis {
           visibility: visible;
         }
       }
@@ -95,7 +97,7 @@
   </head>
   <body>
     <h1>
-      <a onclick="document.body.classList.toggle('whatisthis-visible')">🚒 </a>
+      <a onclick="document.body.classList.toggle('whatisthis-toggle-default')">🚒 </a>
       <small>Seattle Fire Active Incidents Map</small>
     </h1>
     <div id="whatisthis">
