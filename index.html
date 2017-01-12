@@ -25,6 +25,9 @@
         margin: 0;
         padding: 0;
       }
+      .overlay:hover h1, .overlay:hover #whatisthis {
+        opacity: 1;
+      }
       h1 {
         font-weight: normal;
         font-size: 40px;
@@ -104,22 +107,24 @@
     </style>
   </head>
   <body>
-    <h1>
-      <a onclick="document.body.classList.toggle('whatisthis-toggle-default')">🚒 </a>
-      <small>Where are those sirens headed?</small>
-    </h1>
-    <div id="whatisthis">
-      Displaying the home stations and
-      <a href="http://www2.seattle.gov/fire/realtime911/getRecsForDatePub.asp?action=Today&incDate=&rad1=des">active response locations</a>
-      of
-      <a href="http://seattle.gov/fire/">Seattle Fire Department’s</a>
-      beautiful apparatus.
-      A mini-project by <a href="https://tsibley.net">Thomas Sibley</a>.
-      <br>
-      <small>
-        <a href="https://github.com/tsibley/seattle-fire">Source code</a> //
-        Next update in <span id="countdown">60</span>s.
-      </small>
+    <div class="overlay">
+      <h1>
+        <a onclick="document.body.classList.toggle('whatisthis-toggle-default')">🚒 </a>
+        <small>Where are those sirens headed?</small>
+      </h1>
+      <div id="whatisthis">
+        Displaying the home stations and
+        <a href="http://www2.seattle.gov/fire/realtime911/getRecsForDatePub.asp?action=Today&incDate=&rad1=des">active response locations</a>
+        of
+        <a href="http://seattle.gov/fire/">Seattle Fire Department’s</a>
+        beautiful apparatus.
+        A mini-project by <a href="https://tsibley.net">Thomas Sibley</a>.
+        <br>
+        <small>
+          <a href="https://github.com/tsibley/seattle-fire">Source code</a> //
+          Next update in <span id="countdown">60</span>s.
+        </small>
+      </div>
     </div>
     <div id="map"></div>
     <script>
