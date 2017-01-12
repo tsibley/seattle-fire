@@ -66,11 +66,19 @@
         transform: translate(-50%, 0%);
       }
       .incident-icon {
+        position: absolute;
+      }
+      .incident-icon.siren {
         color: #ce2029;
         font-size: 18px;
-        position: absolute;
         top: -9px;
         left: -4px;
+      }
+      .incident-icon.medic {
+        color: blue;
+        font-size: 26px;
+        top: -12px;
+        left: 0;
       }
       .leaflet-popup-content h4 {
         font-size: 1.1em;
@@ -153,12 +161,20 @@
         }
       }).addTo(Map);
 
-      var incidentIcon  = L.divIcon({ html: '🚨 ', className: 'incident-icon' });
+      var sirenIcon = L.divIcon({ html: '🚨 ', className: 'incident-icon siren' })
+      var medicIcon = L.divIcon({ html: '⚕ ', className: 'incident-icon medic' });
+
+      function incidentIcon(incident) {
+        return incident.properties.reason === 'Medic Response'
+          ? medicIcon
+          : sirenIcon;
+      }
+
       var incidentLayer = L.geoJson(null, {
         pointToLayer: function(incident, ll) {
           return L.marker(ll, {
             title: incident.properties.address,
-            icon: incidentIcon
+            icon: incidentIcon(incident)
           });
         },
         style: function(path) {
