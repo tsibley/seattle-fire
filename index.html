@@ -170,7 +170,7 @@
       var medicIcon = L.divIcon({ html: '⚕ ', className: 'incident-icon medic' });
 
       function incidentIcon(incident) {
-        return incident.properties.reason === 'Medic Response'
+        return incident.properties.reason.match(/(Medic|Aid) Response/)
           ? medicIcon
           : sirenIcon;
       }
