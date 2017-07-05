@@ -320,6 +320,7 @@
                 console.error("Active incident reported unit for which we have no station: ", unit);
               return { unit: unit, station: station };
             })
+            .filter(function (d){ return d.station })
             .forEach(function (d) {
               incidentLayer.addData({
                 type: "Feature",
