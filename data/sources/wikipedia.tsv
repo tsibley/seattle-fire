@@ -1,10 +1,10 @@
-2	Belltown	2320 4th Ave.	E2, E5, L4, A2
+2	Belltown	2320 4th Ave.	A2, A4, E2, E5, L4
 3	Fishermen's Terminal	1735 W Thurman St.	FB1, FB3
 5	Waterfront	925 Alaskan Way	E4 (fireboat company designator), FB2, FB4, FRB5 
 6	Central District	405 M L King Jr. Way. S.	E6, L3
 8	Queen Anne	110 Lee St.	E8, L6
 9	Fremont	3829 Linden Ave. N.	E9
-10	Pioneer Square	400 S Washington St.	E10, L1, HAZ1, MCI2, A5, A10, AIR9, DEP1, STAF10
+10	Pioneer Square	400 S Washington St.	E10, L1, HAZ1, MCI2, A5, A10, DEP1, STAF10
 11	Highland Park	1514 SW Holden St.	E11
 13	Beacon Hill	3601 Beacon Ave. S.	E13, B5
 14	SoDo	3224 4th Ave. S.	L7, R1, A14, R80 (reserve)
@@ -17,10 +17,10 @@
 24	Bitter Lake	401 N 130th St.	E24, AIR240
 25	Capitol Hill	1300 E Pine St.	E25, L10, A25, B22, MVU1, P25 
 26	South Park	800 S Cloverdale St.	E26, AIR260
-27	Georgetown	1000 S Myrtle St.	E27, DECON1, MMST, REHAB1, USAR1
-28	Rainier Valley	5968 Rainier Ave. S.	E28, L12, M28
+27	Georgetown	1000 S Myrtle St.	E27, DECON1, REHAB1
+28	Rainier Valley	5968 Rainier Ave. S.	E28, L12, M28, MMST, USAR1
 29	Admiral District	2139 Ferry Ave. SW	E29
-30	Mount Baker	2931 S Mount Baker Blvd	E30
+30	Mount Baker	2931 S Mount Baker Blvd	E30, AIR9
 31	Northgate	1319 N Northgate Way	E31, L5, M31
 32	West Seattle	3715 SW Alaska St.	E32, L11, B7
 33	Rainier Beach	9645 Renton Ave. S.	E33
