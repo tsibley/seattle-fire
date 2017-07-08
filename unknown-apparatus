@@ -1,9 +1,11 @@
 #!/bin/bash
 set -e -o pipefail
 
-recs fromcsv -d $'\t' --header data/active-incidents.tsv \
+recs fromcsv -d $'\t' --header "$@" \
+    | recs assert -v '{{units}}' \
     | recs decollate -d split,units,' ',unit \
     | recs collate -k unit \
     | recs join --right unit apparatus <(recs fromcsv --header data/apparatus-locations.csv) \
     | recs grep -v '{{station}}' \
-    | recs eval '{{apparatus}}'
+    | recs eval '{{unit}}' \
+    | sort -i
