@@ -172,6 +172,8 @@
         }
       }).addTo(Map);
 
+      var formatTime = dl.format.time("%A, %B %-d at %H:%M");
+
       var sirenIcon = L.divIcon({ html: '🚨 ', className: 'incident-icon siren' })
       var medicIcon = L.divIcon({ html: '⚕ ', className: 'incident-icon medic' });
       var fireIcon  = L.divIcon({ html: '🔥 ', className: 'incident-icon fire' });
@@ -202,6 +204,7 @@
 
           if (geometry === "Point") {
             html = "<h4>" + esc(feature.properties.address) + "</h4>"
+                 + "<p class='timestamp'>First reported: " + esc(formatTime(feature.properties.timestamp)) + "</p>"
                  + "<div class='units'>"
                  + feature.properties.units.length
                    + " unit"
@@ -286,7 +289,14 @@
       }
 
       function loadIncidents() {
-        dl.tsv('data/active-incidents.tsv', processIncidents);
+        dl.tsv('data/active-incidents.tsv',
+          {
+            parse: {
+              timestamp: 'date'
+            }
+          },
+          processIncidents
+        );
       }
 
       function processIncidents(err, data) {
@@ -307,14 +317,16 @@
                .sort()
              );
 
-            var reason = dl.unique(d.values, 'incident_type').join(" / ");
+            var reason    = dl.unique(d.values, 'incident_type').join(" / ");
+            var timestamp = dl.min(d.values, 'timestamp');
 
             incidentLayer.addData({
               type: "Feature",
               properties: {
                 address: d.location,
                 units: units,
-                reason: reason
+                reason: reason,
+                timestamp: timestamp
               },
               geometry: {
                 type: "Point",
