@@ -5,7 +5,14 @@
 #
 set -e -o pipefail
 
-url='http://www2.seattle.gov/fire/realtime911/getRecsForDatePub.asp?action=Today&incDate=&rad1=des'
+if [[ $# -gt 0 ]]; then
+    date="${1//\//%2F}"
+    url="http://www2.seattle.gov/fire/realtime911/getRecsForDatePub.asp?incDate=$date&rad1=des"
+    state=closed
+else
+    url='http://www2.seattle.gov/fire/realtime911/getRecsForDatePub.asp?action=Today&rad1=des'
+    state=active
+fi
 
 # Header row
 paste -s <<.
@@ -19,6 +26,6 @@ incident_type
 
 # Active incidents
 curl -fsS "$url" \
-    | grep -E 'td[^>]+\bactive\b' \
+    | grep -E 'td[^>]+\b'"$state"'\b' \
     | perl -nE '/>\s*(.*)\s*<\/td>\s*$/ and say $1' \
     | perl -nE 'chomp; push @lines, $_; say(join "\t", @lines), @lines = () if $. % 6 == 0 or eof;'
