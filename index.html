@@ -237,7 +237,7 @@
 
           if (geometry === "Point") {
             html = "<h4>" + esc(feature.properties.address) + "</h4>"
-                 + "<p class='timestamp'>First reported: " + esc(formatTime(feature.properties.timestamp)) + "</p>"
+                 + "<p class='timestamp'>First reported " + esc(formatTime(feature.properties.timestamp)) + "</p>"
                  + "<div class='units'>"
                  + feature.properties.units.length
                    + " unit"
