@@ -110,6 +110,13 @@
           visibility: visible;
         }
       }
+
+      a.with-icon {
+        text-decoration: none;
+      }
+      a.with-icon > span {
+        text-decoration: underline;
+      }
     </style>
   </head>
   <body>
@@ -130,6 +137,32 @@
           <a href="https://github.com/tsibley/seattle-fire">Source code</a> //
           Next update in <span id="countdown">60</span>s.
         </small>
+        <br><br>
+        <a href="http://komonews.com/news/local/live-police--fire-scanner-11-20-2015"
+           onclick="tuneIn(this, event)"
+           target="_new"
+           class="with-icon">
+          🔊  <span>Listen live</span>
+        </a>
+        <script>
+          function tuneIn(link, event) {
+            if (Hls.isSupported()) {
+              event.preventDefault();
+
+              var audio = document.createElement("audio");
+              audio.setAttribute("controls", "controls");
+
+              link.parentNode.replaceChild(audio, link);
+
+              var hls = new Hls();
+              hls.loadSource('http://wpc.1527f.alphacdn.net/hls-live/201527F/KOMO/scanner/stream128k.m3u8');
+              hls.attachMedia(audio);
+              hls.on(Hls.Events.MANIFEST_PARSED, function() {
+                audio.play();
+              });
+            }
+          }
+        </script>
       </div>
     </div>
     <div id="map"></div>
@@ -404,5 +437,6 @@
           Map.closePopup();
       }, false);
     </script>
+    <script src="https://unpkg.com/hls.js@0.8.3/dist/hls.light.min.js"></script>
   </body>
 </html>
