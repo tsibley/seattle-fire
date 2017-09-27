@@ -238,6 +238,13 @@
           if (geometry === "Point") {
             html = "<h4>" + esc(feature.properties.address) + "</h4>"
                  + "<p class='timestamp'>First reported " + esc(formatTime(feature.properties.timestamp)) + "</p>"
+                 + "<p>Incident "
+                 + feature.properties.incident_numbers.map(function(_){
+                     return "<a target='_new' href='http://www2.seattle.gov/fire/IncidentSearch/incidentDetail.asp?ID="
+                       + esc(encodeURIComponent(_))
+                       + "'>" + esc(_) + "</a>"
+                   }).join("\n")
+                 + "</p>"
                  + "<div class='units'>"
                  + feature.properties.units.length
                    + " unit"
@@ -352,6 +359,7 @@
 
             var reason    = dl.unique(d.values, 'incident_type').join(" / ");
             var timestamp = dl.min(d.values, 'timestamp');
+            var ids       = dl.unique(d.values, 'incident_number');
 
             incidentLayer.addData({
               type: "Feature",
@@ -359,7 +367,8 @@
                 address: d.location,
                 units: units,
                 reason: reason,
-                timestamp: timestamp
+                timestamp: timestamp,
+                incident_numbers: ids
               },
               geometry: {
                 type: "Point",
