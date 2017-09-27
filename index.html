@@ -155,7 +155,7 @@
               link.parentNode.replaceChild(audio, link);
 
               var hls = new Hls();
-              hls.loadSource('http://wpc.1527f.alphacdn.net/hls-live/201527F/KOMO/scanner/stream128k.m3u8');
+              hls.loadSource('https://edgecastcdn.net/hls-live/201527F/KOMO/scanner/stream128k.m3u8');
               hls.attachMedia(audio);
               hls.on(Hls.Events.MANIFEST_PARSED, function() {
                 audio.play();
