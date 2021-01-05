@@ -1,0 +1,29 @@
+#!/bin/bash
+set -euo pipefail
+
+base=$(dirname "$0")
+target=data/active-incidents.tsv
+datafile=$base/$target
+errorfile=$base/.update-incidents.error
+
+now=$(date +%s)
+delay_min=30
+delay_ago=$(( $now - $delay_min * 60 ))
+datafile_last_updated=$(stat --format=%Y "$datafile")
+
+if make -C "$base" "$target" >/dev/null 2>&1; then
+    # Clear error status when successful
+    if [[ -e $errorfile ]]; then
+        duration_min=$(( ($now - $datafile_last_updated) / 60 ))
+        echo "Successfully updated $target after problems lasting $duration_min min" >&2
+        rm -f "$errorfile"
+    fi
+else
+    if [[ $delay_ago -gt $datafile_last_updated ]]; then
+        if [[ ! -e $errorfile ]]; then
+            echo "Problems updating $target even after $delay_min min" >&2
+            touch "$errorfile"
+            exit 1
+        fi
+    fi
+fi
