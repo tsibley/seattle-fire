@@ -9,7 +9,7 @@ data/active-incidents.tsv:
 	mv $@.new $@
 
 data/apparatus-locations.csv: data/sources/wikipedia.tsv
-	recs fromcsv -d $$'\t' -k station,neighborhood,address,units $< \
+	recs fromcsv -d $$'\t' --header $< \
 		| recs decollate --dldeagg '_split(units, qr/, */, apparatus)' \
 		| recs xform '{{apparatus_note}} = $$1 if {{apparatus}} =~ s/ +\((.+?)\)$$//' \
 		| recs tocsv -k apparatus,station,apparatus_note \
