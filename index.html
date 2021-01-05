@@ -179,10 +179,11 @@
 
       var Map = L.map('map').setView(Seattle, 12);
 
-      var streets = L.tileLayer('https://{s}.tiles.mapbox.com/v3/{map}/{z}/{x}/{y}.png', {
-        attribution: "<a href='https://www.mapbox.com/about/maps/' target='_blank'>&copy; Mapbox &copy; OpenStreetMap</a>",
-        map: 'trs.he762e4e',
-        maxZoom: 17
+      var streets = L.tileLayer('https://stamen-tiles-{s}.a.ssl.fastly.net/toner-lite/{z}/{x}/{y}{r}.png', {
+        attribution: 'Map tiles by <a href="http://stamen.com">Stamen Design</a>, <a href="http://creativecommons.org/licenses/by/3.0">CC BY 3.0</a> &mdash; Map data &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+        subdomains: 'abcd',
+        minZoom: 0,
+        maxZoom: 20
       }).addTo(Map);
 
       var stationLayer = L.geoJson(null, {
