@@ -420,13 +420,13 @@
                   + '&language=en'
                   + '&address=' + encodeURIComponent(address);
           dl.load({ url: url }, function(err, data){
-            if (err || !data) {
+            data = JSON.parse(data || "{}").results;
+            if (err || !data || !data.length) {
               console.error("Error geocoding: ", address);
               console.error("Error was: ", err || "No data returned");
               geocodeCache[address] = null;
               return;
             }
-            data = JSON.parse(data).results;
             geocodeCache[address] = [ data[0].geometry.location.lng, data[0].geometry.location.lat ];
             callback( geocodeCache[address] );
           });
