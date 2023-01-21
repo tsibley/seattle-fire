@@ -7,10 +7,10 @@ set -e -o pipefail
 
 if [[ $# -gt 0 ]]; then
     date="${1//\//%2F}"
-    url="http://www2.seattle.gov/fire/realtime911/getRecsForDatePub.asp?incDate=$date&rad1=des"
+    url="https://web.seattle.gov/sfd/realtime911/getRecsForDatePub.asp?incDate=$date&rad1=des"
     state=closed
 else
-    url='http://www2.seattle.gov/fire/realtime911/getRecsForDatePub.asp?action=Today&rad1=des'
+    url='https://web.seattle.gov/sfd/realtime911/getRecsForDatePub.asp?action=Today&rad1=des'
     state=active
 fi
 
