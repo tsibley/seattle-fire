@@ -19,5 +19,6 @@ publish:
 	rsync -av --no-owner --no-group --delete \
 		--chmod=u=rwX,og=rX \
 		--exclude='.git*' \
-		--exclude=data/active-incidents.tsv \
+		--exclude=data/active-incidents.tsv{,.new} \
+		--exclude=.update-incidents.error \
 		. tsibley.net:www/seattle/fire/
