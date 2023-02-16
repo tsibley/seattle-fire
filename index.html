@@ -339,7 +339,7 @@
       }
 
       function loadIncidents() {
-        return fetch('data/active-incidents.tsv')
+        return fetch('data/active-incidents.tsv', {cache: 'no-cache'})
           .then(res => res.text().then(text => ({
             text,
             updated: res.headers.get("Last-Modified"),
