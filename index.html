@@ -127,7 +127,7 @@
       </h1>
       <div id="whatisthis">
         Displaying the home stations and
-        <a href="http://www2.seattle.gov/fire/realtime911/getRecsForDatePub.asp?action=Today&incDate=&rad1=des">active response locations</a>
+        <a href="https://web.seattle.gov/sfd/realtime911/getRecsForDatePub.asp?action=Today&incDate=&rad1=des">active response locations</a>
         of
         <a href="http://seattle.gov/fire/">Seattle Fire Department’s</a>
         beautiful apparatus.
@@ -241,7 +241,7 @@
                  + "<p class='timestamp'>First reported " + esc(formatTime(feature.properties.timestamp)) + "</p>"
                  + "<p>Incident "
                  + feature.properties.incident_numbers.map(function(_){
-                     return "<a target='_new' href='http://www2.seattle.gov/fire/IncidentSearch/incidentDetail.asp?ID="
+                     return "<a target='_new' href='https://web.seattle.gov/sfd/IncidentSearch/incidentDetail.asp?ID="
                        + esc(encodeURIComponent(_))
                        + "'>" + esc(_) + "</a>"
                    }).join("\n")
