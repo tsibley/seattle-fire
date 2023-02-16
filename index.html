@@ -134,8 +134,12 @@
         A mini-project by <a href="https://tsibley.net">Thomas Sibley</a>.
         <br>
         <small>
-          <a href="https://github.com/tsibley/seattle-fire">Source code</a> //
-          Next update in <span id="countdown">60</span>s.
+          Data last updated <span id="age">an unknown time</span> ago //
+          Next refresh in <span id="countdown">60s</span>.
+        </small>
+        <br>
+        <small>
+          <a href="https://github.com/tsibley/seattle-fire">Source code</a>
         </small>
         <br><br>
         <a href="http://komonews.com/news/local/live-police--fire-scanner-11-20-2015"
@@ -312,8 +316,8 @@
           }
         });
 
-        loadIncidents();
-        setInterval(checkForUpdate, 1000, { loaded: new Date() });
+        loadIncidents()
+          .then(updated => setInterval(checkForUpdate, 1000, { loaded: new Date(), updated }));
       }
 
       function checkForUpdate(state) {
@@ -321,23 +325,39 @@
         var elapsed = Math.floor((new Date() - state.loaded) / 1000);
 
         if (elapsed >= refresh) {
-          loadIncidents();
+          loadIncidents()
+            .then(updated => state.updated = updated);
           state.loaded = new Date();
           elapsed = refresh;
         }
         document.getElementById("countdown")
-          .textContent = refresh - elapsed;
+          .textContent = (refresh - elapsed) + "s";
+
+        document.getElementById("age").textContent = state.updated
+          ? Math.floor((new Date() - new Date(state.updated)) / 1000) + "s"
+          : "an unknown time";
       }
 
       function loadIncidents() {
-        dl.tsv('data/active-incidents.tsv',
-          {
-            parse: {
-              timestamp: 'date'
-            }
-          },
-          processIncidents
-        );
+        return fetch('data/active-incidents.tsv')
+          .then(res => res.text().then(text => ({
+            text,
+            updated: res.headers.get("Last-Modified"),
+          })))
+          .then(({text, updated}) => ({
+            data: dl.read(text, {
+              type: 'tsv',
+              parse: {
+                timestamp: 'date'
+              }
+            }),
+            updated,
+          }))
+          .then(({data, updated}) => {
+            processIncidents(null, data);
+            return updated;
+          })
+          .catch(err => processIncidents(err));
       }
 
       function processIncidents(err, data) {
